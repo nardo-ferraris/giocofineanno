@@ -131,13 +131,14 @@
     <!-- Header -->
     <div class="border-b border-zinc-800 bg-zinc-900">
         <div class="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
-            <div class="flex items-center gap-x-3">
-                <div class="w-11 h-11 bg-emerald-600 rounded-2xl flex items-center justify-center shadow-inner">
-                    <i class="fa-solid fa-gamepad text-white text-3xl"></i>
-                </div>
+            <div class="flex items-center gap-x-4">
+                <!-- Logo Liceo Scientifico Galileo Ferraris Varese -->
+                <img src="logo-ferraris.png" alt="Liceo Scientifico Galileo Ferraris Varese" 
+                     class="h-14 w-auto drop-shadow-sm">
+                
                 <div>
                     <h1 class="title-font text-4xl font-bold tracking-tighter">Wordl</h1>
-                    <p class="text-xs text-zinc-400 -mt-1">Indovina la parola segreta</p>
+                    <p class="text-xs text-zinc-400 -mt-1">Indovina la parola segreta • Liceo Ferraris</p>
                 </div>
             </div>
             
@@ -222,29 +223,6 @@
             </div>
         </div>
 
-        <!-- Suggerimenti -->
-        <div class="max-w-[520px] mx-auto mt-5">
-            <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-5">
-                <div class="flex items-center justify-between mb-3 px-1">
-                    <div class="flex items-center gap-x-2">
-                        <i class="fa-solid fa-lightbulb text-amber-400"></i>
-                        <span class="font-semibold">Suggerimenti</span>
-                    </div>
-                    <span id="remaining-count" 
-                          class="text-xs font-mono px-3 py-1 bg-zinc-800 text-zinc-400 rounded-2xl">10 possibili</span>
-                </div>
-                
-                <div id="suggestions-list" class="flex flex-wrap gap-2 min-h-[46px] px-1">
-                    <!-- Popolato da JS -->
-                </div>
-                
-                <div class="mt-2 px-1 text-[10px] text-zinc-500 flex items-center gap-x-1.5">
-                    <i class="fa-solid fa-info-circle text-xs"></i>
-                    <span>Clicca su una parola per inserirla</span>
-                </div>
-            </div>
-        </div>
-
         <!-- Action Buttons -->
         <div class="max-w-md mx-auto mt-7 flex justify-center gap-3">
             <button onclick="restartCurrentLevel()" 
@@ -306,6 +284,9 @@
     <!-- QUIZ SECTION -->
     <div id="quiz-section" class="hidden max-w-3xl mx-auto px-6 pb-16">
         <div class="text-center mb-10">
+            <div class="flex justify-center mb-4">
+                <img src="logo-ferraris.png" alt="Liceo Scientifico Galileo Ferraris Varese" class="h-12 w-auto">
+            </div>
             <div class="inline-flex items-center gap-x-2 bg-zinc-900 border border-zinc-700 px-4 py-1 rounded-3xl text-sm mb-3">
                 <i class="fa-solid fa-graduation-cap text-emerald-400"></i>
                 <span class="font-semibold">Percorso completato</span>
@@ -314,14 +295,129 @@
             <p class="text-xl text-zinc-400 mt-1">Metti alla prova le tue conoscenze su <span class="font-semibold text-white">C++</span></p>
         </div>
 
-        <div id="questions-container" class="space-y-6"></div>
+        <!-- ==================== SFIDA FINALE C++ ==================== -->
+        <div class="bg-zinc-900 border border-zinc-700 rounded-3xl p-8">
+            <div class="flex items-center gap-x-3 mb-6">
+                <i class="fa-solid fa-terminal text-emerald-400 text-3xl"></i>
+                <h3 class="text-3xl font-bold">Sfida Finale: Decifra il Codice C++</h3>
+            </div>
 
-        <div class="flex justify-center mt-8">
-            <button onclick="submitQuiz()" 
-                    class="px-10 py-4 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 transition font-extrabold text-lg rounded-3xl shadow-xl shadow-emerald-900/40 flex items-center gap-x-3">
-                <span>INVIA LE RISPOSTE</span>
-                <i class="fa-solid fa-paper-plane"></i>
-            </button>
+            <p class="text-zinc-400 mb-6">
+                Analizza attentamente il seguente programma e scopri cosa stampa.
+            </p>
+
+            <!-- Codice C++ -->
+            <div class="mb-8">
+                <div class="text-sm font-semibold text-zinc-400 mb-2 px-1">codice.cpp</div>
+                <pre class="bg-zinc-950 border border-zinc-700 rounded-2xl p-6 text-sm overflow-x-auto"><code>#include &lt;iostream&gt;
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+    int a = 0;
+    float f = 1.5;
+
+    for(int i=0; i<10; i++)
+        a += i % 2;
+
+    do
+    {
+        f = f + 0.0;
+    }
+    while(f < 0);
+
+    int x;
+
+    x = 6 * 11;
+    switch(rand() % 4)
+    {
+        case 0: cout << char(x); break;
+        case 1: cout << char(x); break;
+        case 2: cout << char(x); break;
+        default: cout << char(x);
+    }
+
+    cout << char(100 + 17);
+    cout << char(50 * 2 + 11);
+    cout << char(55 * 2);
+    cout << char(194 / 2);
+    cout << char(22 * 2);
+    cout << char(16 * 2);
+
+    int k = 0;
+    while(k < 6)
+    {
+        if(k == 0) cout << char(202 / 2);
+        else if(k == 1) cout << char(115);
+        else if(k == 2) cout << char(58 * 2);
+        else if(k == 3) cout << char(97);
+        else if(k == 4) cout << char(58 * 2);
+        else cout << char(101);
+        k++;
+    }
+
+    cout << char(32);
+
+    int n = 100;
+    n = n / 2;
+    cout << char(n);
+
+    cout << char(71);
+    cout << char(32);
+    cout << char(17);
+
+    int ultimo = 0;
+
+    for(int i = 0; i < 3; i++)
+        ultimo++;
+
+    cout << ultimo;
+
+    return 0;
+}</code></pre>
+            </div>
+
+            <!-- Tabella ASCII -->
+            <!-- Tabella ASCII Completa -->
+<div class="mb-8">
+    <h4 class="font-semibold mb-3">Tabella ASCII Completa (Caratteri Stampabili)</h4>
+    
+    <div class="bg-zinc-950 border border-zinc-700 rounded-2xl p-4 max-h-[280px] overflow-y-auto">
+        <div class="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-x-4 gap-y-1 text-sm font-mono">
+            <!-- Generata dinamicamente via JS per pulizia -->
+            <script>
+                // Tabella ASCII 32-126
+                for (let i = 32; i <= 126; i++) {
+                    const char = (i === 32) ? 'Space' : String.fromCharCode(i);
+                    document.write(`
+                        <div class="flex justify-between px-2 py-0.5 hover:bg-zinc-800 rounded">
+                            <span class="text-emerald-400">${i}</span>
+                            <span class="text-white">${char}</span>
+                        </div>
+                    `);
+                }
+            </script>
+        </div>
+    </div>
+    <p class="text-xs text-zinc-500 mt-2 px-1"> Scorri per vedere tutti i caratteri (32–126)</p>
+</div>
+
+            <!-- Input frase segreta -->
+            <div>
+                <label class="block text-sm font-medium mb-2">Quale frase stampa il programma?</label>
+                <div class="flex gap-3">
+                    <input id="frase-segreta" type="text" 
+                           class="flex-1 bg-zinc-800 border border-zinc-700 rounded-2xl px-5 py-3 text-lg focus:outline-none focus:border-emerald-500"
+                           placeholder="Scrivi qui la frase completa...">
+                    <button onclick="verificaFraseSegreta()" 
+                            class="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 rounded-2xl font-bold transition">
+                        Verifica
+                    </button>
+                </div>
+                <div id="risultato-frase" class="mt-3 text-sm font-medium"></div>
+            </div>
         </div>
     </div>
 
@@ -341,67 +437,52 @@
             {
                 level: 1,
                 length: 5,
-                words: ["CRANE", "SLATE", "TRACE", "ROAST", "HOUSE", "PLANT", "WORLD", "GAMES", "BRAIN", "FLAME"]
+                words: ["AMORE","BELLA","DONNA","FORTE","GIOCO","LIBRO","NOTTE","PARTE","QUASI","ROSSO",
+  "TEMPO","ACQUA","BAGNO","CIELO","DOLCE","ENTRA","FIUME","GENTE","HOTEL","ALBER",
+  "AMICO","ANIMA","ASINO","BASSO","BECCO","BELLO","BONTA","BORSA","BRACC","BREVE",
+  "BRUNO","BUONO","CALDO","CAMPO","CANTO","CAPRA","CARNE","CAVAL","CENTO","CERCA",
+  "CHIRO","CHITA","CICLO","COLLO","CORPO","COSTA","CREDO","CROCE","CUORE","DANZA",
+  "DESTO","DORMI","DRAGO","DUOMO","EBANO","ECOLE","ELENA","ENORM","ESAME","ETERE",
+  "FALCO","FAMIG","FANGO","FARMA","FATTO","FELCE","FERRO","FESTA","FIATO","FIENO",
+  "FIORE","FORMA","FORNO","FORZA","GATTO","GELSO","GIOIA","GOMMA","GRANO","GRASS",
+  "GRECO","GRIDO","GUIDA","GUSTO","IDOLO","ISOLA","LARGO","LATTE","LEONE","LETTO",
+  "LICEO","LIEVE","LINEA","LITRO","LIVRO","LUNGO","LUOGO","MADRE","MAGIA","MAGRO",
+  "MARMO","MASCH","MEDIO","MENTE","MERLO","METRO","MIELE","MILIO","MIRTO","MOLLA",
+  "MONDO","MONTE","MORTO","MOSTO","MUFFA","NARRA","NIEVO","NONNO","NUCLE","NUOTO",
+  "NUOVO","OCCIO","ODORE","OFFRO","OGGET","OMBRA","OPERA","OSCUR","OSTRO","OTTRO",
+  "OVILE","PADRE","PAESE","PALMA","PANNA","PARCO","PASSO","PASTA","PATER","PAURA",
+  "PECCO","PENNA","PENSO","PERLA","PESCA","PESCE","PESTE","PETTO","PIANO","PIGRO",
+  "PIPPA","PIRLA","PISCI","PIUMA","PIZZA","PLAGA","POLLO","POLSO","POMPA","PONTE",
+  "PORCO","PORTO","POSTO","POZZO","PRATO","PRESA","PRETE","PRIMO","PRIVO","PROVA",
+  "PUGNO","PULCE","PUNTO","QUALE","QUOTA","RAGNO","RANCO","RATTO","RAZZO","REALE",
+  "REATO","RETTA","RICCO","RIFER","RISMA","RULLO","RUOTA","SACCO","SALMA","SALTO",
+  "SALVA","SALVE","SALVO","SANTO","SARTO","SASSO","SAVIO","SCALA","SCENA","SCESA",
+  "SCOPA","SCURO","SECCA","SECCO","SEDIA","SEGNO","SELVA","SENSO","SENZA","SERIE",
+  "SERIO","SERPE","SERRA","SERVO","SESSO","SETTE","SFIDA"]
+
             },
             {
                 level: 2,
                 length: 6,
-                words: ["BANANA", "CASTLE", "DRAGON", "EMPIRE", "FOREST", "GARDEN", "ISLAND", "JUNGLE", "KNIGHT", "LADDER"]
+                words: ["TAVOLA","FIGLIO","FRUTTA","LIMONE","MIGLIO","MINUTO","MISURA","MOBILE","MOTORE",
+    "MUSICA","NATALE","NEBBIA","OCCHIO","ORDINE","PAGINA","PATATA","PIATTO","PIAZZA",
+    "PIETRA","POTERE","QUADRO","QUANTO","QUARTO","QUESTO","QUIETO","QUINTO","RIGORE",
+    "RINCON","RISATA","RIVALE","ROCCIA","ROVINA","RUBINO","RUMORE","SABBIA","SAGGIO",
+    "SALICE","SALONE","SANGUE","SAPONE","SCARPA","SCORZA","SCOTTA","SCUOLA","SERATA",
+    "SERENO","SFINGE","SFONDO"]
             },
             {
                 level: 3,
                 length: 7,
-                words: ["ACADEMY", "BALANCE", "CIRCUIT", "DIAMOND", "ELEMENT", "FACTORY", "GALLERY", "HISTORY", "IMAGINE", "JOURNEY"]
+                words: ["PIOGGIA","QUERCIA","RAGAZZO","RILIEVO","RIMEDIO","RISCHIO","RISORSA","RISTORO",
+  "RITORNO","RIVOLTA","ROTONDO","RUGGITO","SCATOLA","SCHERZO","SCHIUMA","SCIMMIA",
+  "SCRITTO","SEGNALE","SEGRETO","SEGUIRE","SEZIONE","SFOGLIA","SGANCIO"]
             },
             {
                 level: 4,
                 length: 8,
-                words: ["COMPUTER", "DATABASE", "ELEPHANT", "FUNCTION", "GRAPHICS", "HARDWARE", "INTERNET", "KEYBOARD", "LANGUAGE", "MOUNTAIN"]
-            }
-        ];
-
-        const quizQuestions = [
-            {
-                question: "Qual è il punto di ingresso obbligatorio di ogni programma C++?",
-                options: ["A) La funzione start()", "B) La funzione main()", "C) La funzione init()", "D) La funzione begin()"],
-                correctIndex: 1,
-                explanation: "La funzione main() è il punto di ingresso standard da cui inizia l'esecuzione di un programma C++."
-            },
-            {
-                question: "Quale header è necessario includere per utilizzare cout e cin?",
-                options: ["A) #include &lt;stdio.h&gt;", "B) #include &lt;iostream&gt;", "C) #include &lt;string&gt;", "D) #include &lt;vector&gt;"],
-                correctIndex: 1,
-                explanation: "&lt;iostream&gt; contiene le definizioni per gli stream di input/output standard come cout e cin."
-            },
-            {
-                question: "Qual è la differenza principale tra 'struct' e 'class' in C++?",
-                options: ["A) struct è più veloce", "B) I membri di struct sono public di default, quelli di class sono private", "C) Non esiste alcuna differenza", "D) class non supporta l'ereditarietà"],
-                correctIndex: 1,
-                explanation: "In C++, struct e class sono quasi identici, ma i membri di struct sono public di default mentre in class sono private."
-            },
-            {
-                question: "Cosa fa l'operatore '->' applicato a un puntatore?",
-                options: ["A) Moltiplica il valore del puntatore", "B) Accede a un membro dell'oggetto puntato", "C) Confronta due puntatori", "D) Libera la memoria allocata"],
-                correctIndex: 1,
-                explanation: "L'operatore freccia (->) dereferenzia il puntatore e accede al membro dell'oggetto (equivalente a (*ptr).membro)."
-            },
-            {
-                question: "Quale parola chiave permette il polimorfismo runtime in C++?",
-                options: ["A) static", "B) virtual", "C) override", "D) final"],
-                correctIndex: 1,
-                explanation: "La parola chiave 'virtual' nelle funzioni membro di una classe base abilita il binding dinamico (polimorfismo)."
-            },
-            {
-                question: "Quale contenitore della STL è generalmente più efficiente per l'accesso casuale?",
-                options: ["A) std::list", "B) std::vector", "C) std::deque", "D) std::map"],
-                correctIndex: 1,
-                explanation: "std::vector offre accesso casuale O(1) grazie alla memorizzazione contigua in memoria."
-            },
-            {
-                question: "Cosa sono gli smart pointer introdotti in C++11?",
-                options: ["A) Puntatori che si allocano da soli senza new", "B) Puntatori intelligenti che gestiscono automaticamente la memoria (unique_ptr, shared_ptr)", "C) Puntatori a funzioni membro", "D) Puntatori costanti a oggetti"],
-                correctIndex: 1,
-                explanation: "Gli smart pointer (unique_ptr, shared_ptr, weak_ptr) gestiscono automaticamente la deallocazione della memoria evitando memory leak."
+                words: ["ORGOGLIO","PRINCIPE","RAPPORTO","RINUNCIA","RISPETTO","RUSCELLO","SEMAFORO",
+  "SENTIERE","SEPOLCRO","SERVIZIO","SGABELLO"]
             }
         ];
 
@@ -653,7 +734,6 @@
             applyColorsToRow(currentRow, colors, currentGuess);
             updateKeyboardStatus(currentGuess, colors);
             
-            // Aggiorna suggerimenti
             filterRemainingWords(currentGuess, colors);
             updateSuggestions();
 
@@ -784,91 +864,26 @@
             const quiz = document.getElementById('quiz-section');
             quiz.style.display = 'block';
             quiz.classList.remove('hidden');
-            loadQuizQuestions();
         }
 
-        function loadQuizQuestions() {
-            const container = document.getElementById('questions-container');
-            container.innerHTML = '';
+        function verificaFraseSegreta() {
+            const input = document.getElementById('frase-segreta').value.trim();
+            const corretta = "Buona estate, grazie 2G <3";
+            const risultato = document.getElementById('risultato-frase');
 
-            quizQuestions.forEach((q, index) => {
-                const card = document.createElement('div');
-                card.className = `bg-zinc-900 border border-zinc-700 rounded-3xl p-7 shadow-xl`;
-
-                let opts = '';
-                q.options.forEach((opt, i) => {
-                    opts += `
-                        <label class="flex items-start gap-3 p-4 border border-zinc-700 hover:border-emerald-600/60 rounded-2xl cursor-pointer mb-2 last:mb-0 group">
-                            <input type="radio" name="q${index}" value="${i}" class="mt-1 w-5 h-5 accent-emerald-600">
-                            <span class="text-zinc-200 group-hover:text-white">${opt}</span>
-                        </label>`;
-                });
-
-                card.innerHTML = `
-                    <div class="flex items-start gap-4 mb-5">
-                        <div class="w-8 h-8 flex-shrink-0 bg-emerald-600 text-white rounded-2xl flex items-center justify-center font-extrabold text-lg">${index + 1}</div>
-                        <div class="flex-1 pt-0.5">
-                            <p class="font-semibold text-xl leading-tight">${q.question}</p>
-                        </div>
-                    </div>
-                    <div class="pl-12 space-y-1">${opts}</div>
+            if (input.toLowerCase() === corretta.toLowerCase()) {
+                risultato.innerHTML = `
+                    <span class="text-emerald-400 font-semibold text-lg">
+                        ✓ Corretto! Hai decifrato il messaggio segreto.
+                    </span>
                 `;
-                container.appendChild(card);
-            });
-        }
-
-        function submitQuiz() {
-            let score = 0;
-            let html = '';
-
-            quizQuestions.forEach((q, index) => {
-                const selected = document.querySelector(`input[name="q${index}"]:checked`);
-                const user = selected ? parseInt(selected.value) : -1;
-                const correct = user === q.correctIndex;
-                if (correct) score++;
-
-                html += `
-                    <div class="rounded-3xl p-6 mb-4 border ${correct ? 'bg-emerald-950/40 border-emerald-600/40' : 'bg-red-950/30 border-red-600/30'}">
-                        <div class="flex items-center gap-3 mb-3">
-                            <span class="font-mono text-xs px-3 py-1 rounded-2xl ${correct ? 'bg-emerald-600' : 'bg-red-600'} text-white font-bold">
-                                ${correct ? 'CORRETTA' : 'SBAGLIATA'}
-                            </span>
-                            <span class="font-semibold text-lg">${index + 1}. ${q.question}</span>
-                        </div>
-                        <div class="pl-1 space-y-1 text-sm">
-                            <div><span class="font-medium text-zinc-400">La tua risposta:</span> <span class="${correct ? 'text-emerald-300' : 'text-red-300'}">${user >= 0 ? q.options[user] : 'Nessuna'}</span></div>
-                            <div><span class="font-medium text-zinc-400">Risposta corretta:</span> <span class="text-emerald-300">${q.options[q.correctIndex]}</span></div>
-                            ${q.explanation ? `<div class="pt-2 text-xs text-zinc-400 border-t border-zinc-700 mt-2">${q.explanation}</div>` : ''}
-                        </div>
-                    </div>`;
-            });
-
-            const perc = Math.round((score / quizQuestions.length) * 100);
-            let msg = perc === 100 ? 'Perfetto! Sei un maestro di C++!' :
-                      perc >= 85 ? 'Eccellente! Ottima padronanza di C++!' :
-                      perc >= 70 ? 'Molto bene! Hai una buona conoscenza.' :
-                      perc >= 50 ? 'Buon tentativo! Continua a studiare.' : 'Non male per iniziare!';
-
-            const container = document.getElementById('questions-container');
-            container.innerHTML = `
-                <div class="text-center mb-10">
-                    <div class="inline-block px-8 py-2 bg-zinc-900 border border-zinc-700 rounded-3xl mb-4">
-                        <span class="font-mono text-6xl font-extrabold text-emerald-400">${score}</span>
-                        <span class="font-mono text-4xl text-zinc-500">/${quizQuestions.length}</span>
-                    </div>
-                    <div class="text-3xl font-bold tracking-tight mb-1">${perc}%</div>
-                    <p class="text-xl text-zinc-300">${msg}</p>
-                </div>
-                <div class="max-w-2xl mx-auto">${html}</div>
-                <div class="flex justify-center gap-4 mt-10">
-                    <button onclick="restartEverything()" class="px-8 py-3.5 flex items-center gap-x-3 bg-white text-zinc-900 hover:bg-zinc-100 font-extrabold rounded-3xl text-sm">
-                        <i class="fa-solid fa-redo"></i> <span>RICOMINCIA TUTTO</span>
-                    </button>
-                    <button onclick="location.reload()" class="px-8 py-3.5 flex items-center gap-x-3 bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 font-semibold rounded-3xl text-sm">
-                        ESci E RICARICA
-                    </button>
-                </div>
-            `;
+            } else {
+                risultato.innerHTML = `
+                    <span class="text-red-400">
+                        ✗ Non corretto. Riprova.
+                    </span>
+                `;
+            }
         }
 
         function restartEverything() {
