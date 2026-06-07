@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wordl • Indovina la Parola</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        :root {
+            --green: #6aaa64;
+            --yellow: #c9b458;
+            --gray: #787c7e;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .title-font {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .tile {
+            width: 56px;
+            height: 56px;
+            border: 2px solid #d1d5db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+        }
+
+        .tile.filled {
+            border-color: #9ca3af;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .tile.correct {
+            background-color: #6aaa64 !important;
+            border-color: #6aaa64 !important;
+            color: white !important;
+            animation: pop 0.2s ease;
+        }
+
+        .tile.present {
+            background-color: #c9b458 !important;
+            border-color: #c9b458 !important;
+            color: white !important;
+            animation: pop 0.2s ease;
+        }
+
+        .tile.absent {
+            background-color: #787c7e !important;
+            border-color: #787c7e !important;
+            color: white !important;
+            animation: pop 0.2s ease;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.8); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .keyboard-key {
+            width: 42px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+            background-color: #e5e7eb;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            user-select: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .keyboard-key:active {
+            transform: scale(0.95);
+            background-color: #d1d5db;
+        }
+
+        .keyboard-key.correct {
+            background-color: #6aaa64 !important;
+            color: white !important;
+        }
+
+        .keyboard-key.present {
+            background-color: #c9b458 !important;
+            color: white !important;
+        }
+
+        .keyboard-key.absent {
+            background-color: #787c7e !important;
+            color: white !important;
+        }
+
+        .keyboard-key.wide {
+            width: 72px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .wordl-board {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .section-header {
+            background: linear-gradient(to right, #111827, #1f2937);
+        }
+
+        .game-container {
+            max-width: 520px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-200">
+    <!-- Header -->
+    <div class="border-b border-zinc-800 bg-zinc-900">
+        <div class="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-11 h-11 bg-emerald-600 rounded-2xl flex items-center justify-center shadow-inner">
+                    <i class="fa-solid fa-gamepad text-white text-3xl"></i>
+                </div>
+                <div>
+                    <h1 class="title-font text-4xl font-bold tracking-tighter">Wordl</h1>
+                    <p class="text-xs text-zinc-400 -mt-1">Indovina la parola</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-x-2 text-sm">
+                <div class="px-4 py-1.5 bg-zinc-900 border border-zinc-700 rounded-3xl flex items-center gap-x-2">
+                    <div class="flex items-center">
+                        <i class="fa-solid fa-layer-group text-emerald-400 mr-2"></i>
+                        <span class="font-semibold">Livello <span id="current-level">1</span></span>
+                    </div>
+                    <div class="w-px h-4 bg-zinc-700"></div>
+                    <span class="font-mono text-emerald-300"><span id="word-length">5</span> lettere</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GAME SECTION -->
+    <div id="game-section" class="max-w-5xl mx-auto px-6 pt-8 pb-12">
+        <!-- Instructions -->
+        <div class="max-w-md mx-auto mb-6 text-center">
+            <p class="text-zinc-400 text-sm">Indovina la parola segreta in <strong class="text-white">6 tentativi</strong>.<br>
+            Le lettere cambieranno colore per guidarti.</p>
+        </div>
+
+        <!-- Board -->
+        <div class="game-container mb-8">
+            <div id="board" class="wordl-board mx-auto"></div>
+        </div>
+
+        <!-- Status Message -->
+        <div id="status-message" class="max-w-md mx-auto mb-4 min-h-[28px] text-center text-sm font-medium"></div>
+
+        <!-- Virtual Keyboard -->
+        <div class="max-w-[520px] mx-auto">
+            <div id="keyboard" class="flex flex-col gap-1.5 items-center">
+                <!-- Row 1 -->
+                <div class="flex gap-1 justify-center">
+                    <button onclick="addLetter('Q')" class="keyboard-key">Q</button>
+                    <button onclick="addLetter('W')" class="keyboard-key">W</button>
+                    <button onclick="addLetter('E')" class="keyboard-key">E</button>
+                    <button onclick="addLetter('R')" class="keyboard-key">R</button>
+                    <button onclick="addLetter('T')" class="keyboard-key">T</button>
+                    <button onclick="addLetter('Y')" class="keyboard-key">Y</button>
+                    <button onclick="addLetter('U')" class="keyboard-key">U</button>
+                    <button onclick="addLetter('I')" class="keyboard-key">I</button>
+                    <button onclick="addLetter('O')" class="keyboard-key">O</button>
+                    <button onclick="addLetter('P')" class="keyboard-key">P</button>
+                </div>
+                <!-- Row 2 -->
+                <div class="flex gap-1 justify-center">
+                    <button onclick="addLetter('A')" class="keyboard-key">A</button>
+                    <button onclick="addLetter('S')" class="keyboard-key">S</button>
+                    <button onclick="addLetter('D')" class="keyboard-key">D</button>
+                    <button onclick="addLetter('F')" class="keyboard-key">F</button>
+                    <button onclick="addLetter('G')" class="keyboard-key">G</button>
+                    <button onclick="addLetter('H')" class="keyboard-key">H</button>
+                    <button onclick="addLetter('J')" class="keyboard-key">J</button>
+                    <button onclick="addLetter('K')" class="keyboard-key">K</button>
+                    <button onclick="addLetter('L')" class="keyboard-key">L</button>
+                </div>
+                <!-- Row 3 -->
+                <div class="flex gap-1 justify-center">
+                    <button onclick="addLetter('Z')" class="keyboard-key">Z</button>
+                    <button onclick="addLetter('X')" class="keyboard-key">X</button>
+                    <button onclick="addLetter('C')" class="keyboard-key">C</button>
+                    <button onclick="addLetter('V')" class="keyboard-key">V</button>
+                    <button onclick="addLetter('B')" class="keyboard-key">B</button>
+                    <button onclick="addLetter('N')" class="keyboard-key">N</button>
+                    <button onclick="addLetter('M')" class="keyboard-key">M</button>
+                    <button onclick="deleteLetter()" class="keyboard-key wide bg-zinc-700 text-white flex items-center justify-center">
+                        <i class="fa-solid fa-delete-left text-lg"></i>
+                    </button>
+                    <button onclick="submitGuess()" class="keyboard-key wide bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs tracking-wider">INVIO</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="max-w-md mx-auto mt-8 flex justify-center gap-3">
+            <button onclick="restartCurrentLevel()" 
+                    class="flex items-center gap-x-2 px-5 py-2.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-sm font-semibold rounded-3xl transition-colors">
+                <i class="fa-solid fa-redo mr-1.5"></i> 
+                <span>Ricomincia Livello</span>
+            </button>
+            
+            <button id="next-level-btn" onclick="goToNextLevel()" 
+                    class="hidden flex items-center gap-x-2 px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-sm font-bold rounded-3xl transition-all shadow-lg shadow-emerald-900/30">
+                <span>Prossimo Livello</span>
+                <i class="fa-solid fa-arrow-right ml-1"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- WIN MODAL -->
+    <div id="win-modal" onclick="if (event.target.id === 'win-modal') hideWinModal()" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div onclick="event.stopImmediatePropagation()" class="bg-zinc-900 border border-zinc-700 rounded-3xl p-8 max-w-sm w-full mx-4 text-center shadow-2xl">
+            <div class="w-20 h-20 mx-auto mb-5 bg-emerald-600/10 rounded-full flex items-center justify-center">
+                <i class="fa-solid fa-trophy text-emerald-400 text-5xl"></i>
+            </div>
+            <h3 class="text-3xl font-bold mb-2">Complimenti!</h3>
+            <p class="text-zinc-300 mb-1">Hai indovinato la parola segreta:</p>
+            <p id="win-word" class="font-mono text-3xl font-extrabold tracking-[4px] text-emerald-300 mb-6"></p>
+            
+            <div class="flex flex-col gap-3">
+                <button onclick="hideWinModal(); goToNextLevel()" 
+                        class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 transition font-bold rounded-3xl text-lg">
+                    Continua al prossimo livello
+                </button>
+                <button onclick="hideWinModal()" 
+                        class="w-full py-3 text-sm text-zinc-400 hover:text-zinc-200 transition">Chiudi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOSE MODAL -->
+    <div id="lose-modal" onclick="if (event.target.id === 'lose-modal') hideLoseModal()" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div onclick="event.stopImmediatePropagation()" class="bg-zinc-900 border border-zinc-700 rounded-3xl p-8 max-w-sm w-full mx-4 text-center shadow-2xl">
+            <div class="w-20 h-20 mx-auto mb-5 bg-red-600/10 rounded-full flex items-center justify-center">
+                <i class="fa-solid fa-times-circle text-red-400 text-5xl"></i>
+            </div>
+            <h3 class="text-3xl font-bold mb-2">Tentativi esauriti</h3>
+            <p class="text-zinc-300 mb-2">La parola segreta era:</p>
+            <p id="lose-word" class="font-mono text-3xl font-extrabold tracking-[4px] text-red-300 mb-6"></p>
+            
+            <button onclick="hideLoseModal(); restartCurrentLevel()" 
+                    class="w-full py-3.5 bg-zinc-700 hover:bg-zinc-600 transition font-bold rounded-3xl">
+                Riprova questo livello
+            </button>
+        </div>
+    </div>
+
+    <!-- QUIZ SECTION -->
+    <div id="quiz-section" class="hidden max-w-3xl mx-auto px-6 pb-16">
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center gap-x-2 bg-zinc-900 border border-zinc-700 px-4 py-1 rounded-3xl text-sm mb-3">
+                <i class="fa-solid fa-graduation-cap text-emerald-400"></i>
+                <span class="font-semibold">Percorso completato</span>
+            </div>
+            <h2 class="text-4xl font-bold tracking-tighter">Quiz di Informatica</h2>
+            <p class="text-xl text-zinc-400 mt-1">Metti alla prova le tue conoscenze su <span class="font-semibold text-white">C++</span></p>
+        </div>
+
+        <div id="questions-container" class="space-y-6"></div>
+
+        <div class="flex justify-center mt-8">
+            <button onclick="submitQuiz()" 
+                    class="px-10 py-4 bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 transition font-extrabold text-lg rounded-3xl shadow-xl shadow-emerald-900/40 flex items-center gap-x-3">
+                <span>INVIA LE RISPOSTE</span>
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Tailwind script
+        function initializeTailwind() {
+            document.documentElement.style.setProperty('--accent', '#10b981');
+        }
+
+        // Game variables
+        let MAX_ATTEMPTS = 6;
+        let currentLevel = 1;
+        let wordLength = 5;
+        let secretWord = "";
+        let currentRow = 0;
+        let currentGuess = "";
+        let gameOver = false;
+        let letterStatus = {}; // letter -> 'correct' | 'present' | 'absent'
+
+        // Word lists per level (English words - classic Wordle style)
+        const levels = [
+            {
+                level: 1,
+                length: 5,
+                words: ["CRANE", "SLATE", "TRACE", "ROAST", "HOUSE", "PLANT", "WORLD", "GAMES", "BRAIN", "FLAME"]
+            },
+            {
+                level: 2,
+                length: 6,
+                words: ["BANANA", "CASTLE", "DRAGON", "EMPIRE", "FOREST", "GARDEN", "ISLAND", "JUNGLE", "KNIGHT", "LADDER"]
+            },
+            {
+                level: 3,
+                length: 7,
+                words: ["ACADEMY", "BALANCE", "CIRCUIT", "DIAMOND", "ELEMENT", "FACTORY", "GALLERY", "HISTORY", "IMAGINE", "JOURNEY"]
+            },
+            {
+                level: 4,
+                length: 8,
+                words: ["COMPUTER", "DATABASE", "ELEPHANT", "FUNCTION", "GRAPHICS", "HARDWARE", "INTERNET", "KEYBOARD", "LANGUAGE", "MOUNTAIN"]
+            }
+        ];
+
+        // C++ Quiz questions (in Italian)
+        const quizQuestions = [
+            {
+                question: "Qual è il punto di ingresso obbligatorio di ogni programma C++?",
+                options: [
+                    "A) La funzione start()",
+                    "B) La funzione main()",
+                    "C) La funzione init()",
+                    "D) La funzione begin()"
+                ],
+                correctIndex: 1,
+                explanation: "La funzione main() è il punto di ingresso standard da cui inizia l'esecuzione di un programma C++."
+            },
+            {
+                question: "Quale header è necessario includere per utilizzare cout e cin?",
+                options: [
+                    "A) #include &lt;stdio.h&gt;",
+                    "B) #include &lt;iostream&gt;",
+                    "C) #include &lt;string&gt;",
+                    "D) #include &lt;vector&gt;"
+                ],
+                correctIndex: 1,
+                explanation: "&lt;iostream&gt; contiene le definizioni per gli stream di input/output standard come cout e cin."
+            },
+            {
+                question: "Qual è la differenza principale tra 'struct' e 'class' in C++?",
+                options: [
+                    "A) struct è più veloce in esecuzione",
+                    "B) I membri di struct sono public di default, quelli di class sono private",
+                    "C) Non esiste alcuna differenza",
+                    "D) class non supporta l'ereditarietà"
+                ],
+                correctIndex: 1,
+                explanation: "In C++, struct e class sono quasi identici, ma i membri di struct sono public di default mentre in class sono private."
+            },
+            {
+                question: "Cosa fa l'operatore '->' applicato a un puntatore?",
+                options: [
+                    "A) Moltiplica il valore del puntatore",
+                    "B) Accede a un membro dell'oggetto puntato",
+                    "C) Confronta due puntatori",
+                    "D) Libera la memoria allocata"
+                ],
+                correctIndex: 1,
+                explanation: "L'operatore freccia (->) dereferenzia il puntatore e accede al membro dell'oggetto (equivalente a (*ptr).membro)."
+            },
+            {
+                question: "Quale parola chiave permette il polimorfismo runtime in C++?",
+                options: [
+                    "A) static",
+                    "B) virtual",
+                    "C) override",
+                    "D) final"
+                ],
+                correctIndex: 1,
+                explanation: "La parola chiave 'virtual' nelle funzioni membro di una classe base abilita il binding dinamico (polimorfismo)."
+            },
+            {
+                question: "Quale contenitore della STL è generalmente più efficiente per l'accesso casuale?",
+                options: [
+                    "A) std::list",
+                    "B) std::vector",
+                    "C) std::deque",
+                    "D) std::map"
+                ],
+                correctIndex: 1,
+                explanation: "std::vector offre accesso casuale O(1) grazie alla memorizzazione contigua in memoria."
+            },
+            {
+                question: "Cosa sono gli smart pointer introdotti in C++11?",
+                options: [
+                    "A) Puntatori che si allocano da soli senza new",
+                    "B) Puntatori intelligenti che gestiscono automaticamente la memoria (unique_ptr, shared_ptr)",
+                    "C) Puntatori a funzioni membro",
+                    "D) Puntatori costanti a oggetti"
+                ],
+                correctIndex: 1,
+                explanation: "Gli smart pointer (unique_ptr, shared_ptr, weak_ptr) gestiscono automaticamente la deallocazione della memoria evitando memory leak."
+            }
+        ];
+
+        // Initialize game
+        function initGame() {
+            initializeTailwind();
+            startLevel(1);
+            
+            // Physical keyboard support
+            document.addEventListener('keydown', handlePhysicalKeyboard);
+            
+            // Show first status hint
+            setTimeout(() => {
+                const status = document.getElementById('status-message');
+                if (status && !gameOver) {
+                    status.innerHTML = `<span class="text-emerald-300">Inizia a digitare sulla tastiera virtuale o fisica...</span>`;
+                }
+            }, 1200);
+        }
+
+        function handlePhysicalKeyboard(e) {
+            if (gameOver || document.getElementById('quiz-section').classList.contains('!flex')) return;
+
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                submitGuess();
+            } else if (e.key === 'Backspace') {
+                e.preventDefault();
+                deleteLetter();
+            } else if (e.key.length === 1 && /^[a-zA-Z]$/.test(e.key)) {
+                e.preventDefault();
+                addLetter(e.key.toUpperCase());
+            }
+        }
+
+        function startLevel(levelNum) {
+            if (levelNum > levels.length) {
+                showQuiz();
+                return;
+            }
+
+            currentLevel = levelNum;
+            const levelData = levels[levelNum - 1];
+            wordLength = levelData.length;
+            
+            // Pick random secret word
+            secretWord = levelData.words[Math.floor(Math.random() * levelData.words.length)];
+            
+            // Reset game state
+            currentRow = 0;
+            currentGuess = "";
+            gameOver = false;
+            letterStatus = {};
+            
+            // Update UI
+            document.getElementById('current-level').textContent = currentLevel;
+            document.getElementById('word-length').textContent = wordLength;
+            
+            // Clear status
+            document.getElementById('status-message').innerHTML = '';
+            
+            // Hide modals and buttons
+            hideWinModal();
+            hideLoseModal();
+            document.getElementById('next-level-btn').classList.add('hidden');
+            
+            // Rebuild board
+            buildBoard();
+            
+            // Reset keyboard appearance
+            resetKeyboardColors();
+            
+            // Focus hint
+            setTimeout(() => {
+                const status = document.getElementById('status-message');
+                if (status && status.innerHTML === '') {
+                    status.innerHTML = `<span class="text-zinc-400 text-xs">Livello ${currentLevel} • ${wordLength} lettere • 6 tentativi</span>`;
+                }
+            }, 800);
+        }
+
+        function buildBoard() {
+            const board = document.getElementById('board');
+            board.innerHTML = '';
+            board.style.width = `${wordLength * 60 + (wordLength - 1) * 6}px`;
+            
+            for (let r = 0; r < MAX_ATTEMPTS; r++) {
+                const row = document.createElement('div');
+                row.className = `grid gap-1.5`;
+                row.style.gridTemplateColumns = `repeat(${wordLength}, 56px)`;
+                
+                for (let c = 0; c < wordLength; c++) {
+                    const tile = document.createElement('div');
+                    tile.className = `tile w-[56px] h-[56px] border-2 border-zinc-600 bg-zinc-900 flex items-center justify-center text-3xl font-extrabold uppercase rounded-xl text-white`;
+                    tile.dataset.row = r;
+                    tile.dataset.col = c;
+                    row.appendChild(tile);
+                }
+                board.appendChild(row);
+            }
+        }
+
+        function updateCurrentRow() {
+            if (gameOver) return;
+            
+            const tiles = document.querySelectorAll(`[data-row="${currentRow}"] .tile`);
+            tiles.forEach((tile, index) => {
+                if (index < currentGuess.length) {
+                    tile.textContent = currentGuess[index];
+                    tile.classList.add('filled');
+                } else {
+                    tile.textContent = '';
+                    tile.classList.remove('filled');
+                }
+            });
+        }
+
+        function addLetter(letter) {
+            if (gameOver || currentGuess.length >= wordLength) return;
+            
+            currentGuess += letter.toUpperCase();
+            updateCurrentRow();
+        }
+
+        function deleteLetter() {
+            if (gameOver || currentGuess.length === 0) return;
+            
+            currentGuess = currentGuess.slice(0, -1);
+            updateCurrentRow();
+        }
+
+        function getColors(guess, secret) {
+            const result = new Array(guess.length).fill('absent');
+            const secretCount = {};
+            
+            // Count letters in secret
+            for (let char of secret) {
+                secretCount[char] = (secretCount[char] || 0) + 1;
+            }
+            
+            // First pass: correct positions (green)
+            for (let i = 0; i < guess.length; i++) {
+                if (guess[i] === secret[i]) {
+                    result[i] = 'correct';
+                    secretCount[guess[i]]--;
+                }
+            }
+            
+            // Second pass: wrong position but exists (yellow)
+            for (let i = 0; i < guess.length; i++) {
+                if (result[i] === 'absent' && secretCount[guess[i]] > 0) {
+                    result[i] = 'present';
+                    secretCount[guess[i]]--;
+                }
+            }
+            
+            return result;
+        }
+
+        function applyColorsToRow(rowIndex, colors, guess) {
+            const tiles = document.querySelectorAll(`[data-row="${rowIndex}"] .tile`);
+            
+            tiles.forEach((tile, index) => {
+                tile.textContent = guess[index];
+                
+                // Remove previous color classes
+                tile.classList.remove('correct', 'present', 'absent', 'filled');
+                
+                // Add new color
+                const colorClass = colors[index];
+                tile.classList.add(colorClass);
+                
+                // Style adjustments
+                if (colorClass === 'correct') {
+                    tile.style.backgroundColor = '#6aaa64';
+                    tile.style.borderColor = '#6aaa64';
+                } else if (colorClass === 'present') {
+                    tile.style.backgroundColor = '#c9b458';
+                    tile.style.borderColor = '#c9b458';
+                } else {
+                    tile.style.backgroundColor = '#787c7e';
+                    tile.style.borderColor = '#787c7e';
+                }
+                tile.style.color = 'white';
+            });
+        }
+
+        function updateKeyboardStatus(guess, colors) {
+            const priority = { 'correct': 3, 'present': 2, 'absent': 1 };
+            
+            for (let i = 0; i < guess.length; i++) {
+                const letter = guess[i];
+                const newStatus = colors[i];
+                
+                if (!letterStatus[letter] || priority[newStatus] > priority[letterStatus[letter]]) {
+                    letterStatus[letter] = newStatus;
+                }
+            }
+            
+            // Update visual keyboard
+            updateKeyboardColors();
+        }
+
+        function updateKeyboardColors() {
+            const keys = document.querySelectorAll('#keyboard button');
+            
+            keys.forEach(key => {
+                const letter = key.textContent.trim().toUpperCase();
+                if (!letter || letter.length > 1) return; // skip special buttons
+                
+                // Reset classes
+                key.classList.remove('correct', 'present', 'absent');
+                key.style.backgroundColor = '';
+                key.style.color = '';
+                
+                if (letterStatus[letter]) {
+                    const status = letterStatus[letter];
+                    key.classList.add(status);
+                    
+                    if (status === 'correct') {
+                        key.style.backgroundColor = '#6aaa64';
+                        key.style.color = 'white';
+                    } else if (status === 'present') {
+                        key.style.backgroundColor = '#c9b458';
+                        key.style.color = 'white';
+                    } else if (status === 'absent') {
+                        key.style.backgroundColor = '#787c7e';
+                        key.style.color = 'white';
+                    }
+                }
+            });
+        }
+
+        function resetKeyboardColors() {
+            const keys = document.querySelectorAll('#keyboard button');
+            keys.forEach(key => {
+                key.classList.remove('correct', 'present', 'absent');
+                key.style.backgroundColor = '';
+                key.style.color = '';
+                
+                // Restore original style for special keys
+                if (key.textContent.includes('INVIO') || key.querySelector('i')) {
+                    if (key.textContent.includes('INVIO')) {
+                        key.style.backgroundColor = '#059669';
+                        key.style.color = 'white';
+                    } else {
+                        key.style.backgroundColor = '#3f3f46';
+                        key.style.color = 'white';
+                    }
+                } else {
+                    key.style.backgroundColor = '#e5e7eb';
+                    key.style.color = '#111827';
+                }
+            });
+        }
+
+        function submitGuess() {
+            const statusEl = document.getElementById('status-message');
+            
+            if (gameOver) return;
+            
+            if (currentGuess.length !== wordLength) {
+                statusEl.innerHTML = `<span class="text-amber-400">La parola deve avere esattamente ${wordLength} lettere!</span>`;
+                setTimeout(() => {
+                    if (!gameOver) statusEl.innerHTML = '';
+                }, 2200);
+                return;
+            }
+            
+            // Validate letters only
+            if (!/^[A-Z]+$/.test(currentGuess)) {
+                statusEl.innerHTML = `<span class="text-red-400">Usa solo lettere!</span>`;
+                return;
+            }
+            
+            // Get feedback colors
+            const colors = getColors(currentGuess, secretWord);
+            
+            // Apply colors to current row
+            applyColorsToRow(currentRow, colors, currentGuess);
+            
+            // Update keyboard knowledge
+            updateKeyboardStatus(currentGuess, colors);
+            
+            // Check win condition
+            const isWin = colors.every(c => c === 'correct');
+            
+            if (isWin) {
+                gameOver = true;
+                statusEl.innerHTML = `<span class="text-emerald-400 font-semibold">Perfetto! Hai indovinato al tentativo ${currentRow + 1}!</span>`;
+                
+                setTimeout(() => {
+                    showWinModal();
+                }, 650);
+            } else {
+                currentRow++;
+                currentGuess = "";
+                
+                if (currentRow >= MAX_ATTEMPTS) {
+                    gameOver = true;
+                    statusEl.innerHTML = `<span class="text-red-400">Tentativi esauriti...</span>`;
+                    
+                    setTimeout(() => {
+                        showLoseModal();
+                    }, 900);
+                } else {
+                    statusEl.innerHTML = `<span class="text-zinc-400 text-xs">Tentativo ${currentRow + 1} di ${MAX_ATTEMPTS}</span>`;
+                }
+            }
+        }
+
+        function showWinModal() {
+            const modal = document.getElementById('win-modal');
+            const wordEl = document.getElementById('win-word');
+            
+            wordEl.textContent = secretWord;
+            modal.style.display = 'flex';
+            modal.classList.remove('hidden');
+            
+            // Show next level button in game area too
+            const nextBtn = document.getElementById('next-level-btn');
+            nextBtn.classList.remove('hidden');
+            
+            // If last level, change button text
+            if (currentLevel === levels.length) {
+                nextBtn.innerHTML = `
+                    <span>Vai al Quiz C++</span>
+                    <i class="fa-solid fa-graduation-cap ml-2"></i>
+                `;
+                nextBtn.onclick = () => {
+                    hideWinModal();
+                    showQuiz();
+                };
+            }
+        }
+
+        function hideWinModal() {
+            const modal = document.getElementById('win-modal');
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+        }
+
+        function showLoseModal() {
+            const modal = document.getElementById('lose-modal');
+            const wordEl = document.getElementById('lose-word');
+            
+            wordEl.textContent = secretWord;
+            modal.style.display = 'flex';
+            modal.classList.remove('hidden');
+        }
+
+        function hideLoseModal() {
+            const modal = document.getElementById('lose-modal');
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+        }
+
+        function goToNextLevel() {
+            hideWinModal();
+            document.getElementById('next-level-btn').classList.add('hidden');
+            
+            if (currentLevel < levels.length) {
+                startLevel(currentLevel + 1);
+            } else {
+                showQuiz();
+            }
+        }
+
+        function restartCurrentLevel() {
+            hideWinModal();
+            hideLoseModal();
+            document.getElementById('next-level-btn').classList.add('hidden');
+            startLevel(currentLevel);
+        }
+
+        // ==================== QUIZ FUNCTIONS ====================
+        function showQuiz() {
+            // Hide game
+            document.getElementById('game-section').classList.add('hidden');
+            
+            // Show quiz
+            const quizSection = document.getElementById('quiz-section');
+            quizSection.classList.remove('hidden');
+            quizSection.style.display = 'block';
+            
+            // Load questions
+            loadQuizQuestions();
+        }
+
+        function loadQuizQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+            
+            quizQuestions.forEach((q, index) => {
+                const questionCard = document.createElement('div');
+                questionCard.className = `bg-zinc-900 border border-zinc-700 rounded-3xl p-7 shadow-xl`;
+                
+                let optionsHTML = '';
+                q.options.forEach((option, optIndex) => {
+                    optionsHTML += `
+                        <label class="flex items-start gap-3 p-4 border border-zinc-700 hover:border-emerald-600/60 rounded-2xl cursor-pointer transition-all mb-2 last:mb-0 group">
+                            <input type="radio" 
+                                   name="question_${index}" 
+                                   value="${optIndex}"
+                                   class="mt-1 w-5 h-5 accent-emerald-600 cursor-pointer">
+                            <span class="text-zinc-200 group-hover:text-white transition-colors">${option}</span>
+                        </label>
+                    `;
+                });
+                
+                questionCard.innerHTML = `
+                    <div class="flex items-start gap-4 mb-5">
+                        <div class="w-8 h-8 flex-shrink-0 bg-emerald-600 text-white rounded-2xl flex items-center justify-center font-extrabold text-lg shadow-inner">${index + 1}</div>
+                        <div class="flex-1 pt-0.5">
+                            <p class="font-semibold text-xl leading-tight">${q.question}</p>
+                        </div>
+                    </div>
+                    <div class="space-y-1 pl-12">
+                        ${optionsHTML}
+                    </div>
+                `;
+                
+                container.appendChild(questionCard);
+            });
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            let resultsHTML = '';
+            
+            const container = document.getElementById('questions-container');
+            
+            quizQuestions.forEach((q, index) => {
+                const selectedInput = document.querySelector(`input[name="question_${index}"]:checked`);
+                const userAnswer = selectedInput ? parseInt(selectedInput.value) : -1;
+                const isCorrect = userAnswer === q.correctIndex;
+                
+                if (isCorrect) score++;
+                
+                const userText = userAnswer >= 0 ? q.options[userAnswer] : '<span class="text-red-400">Nessuna risposta</span>';
+                const correctText = q.options[q.correctIndex];
+                
+                resultsHTML += `
+                    <div class="rounded-3xl p-6 mb-4 border ${isCorrect ? 'bg-emerald-950/40 border-emerald-600/40' : 'bg-red-950/30 border-red-600/30'}">
+                        <div class="flex items-center gap-3 mb-3">
+                            <span class="font-mono text-xs px-3 py-1 rounded-2xl ${isCorrect ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white'} font-bold">
+                                ${isCorrect ? 'CORRETTA' : 'SBAGLIATA'}
+                            </span>
+                            <span class="font-semibold text-lg">${index + 1}. ${q.question}</span>
+                        </div>
+                        
+                        <div class="pl-1 space-y-1 text-sm">
+                            <div><span class="font-medium text-zinc-400">La tua risposta:</span> <span class="${isCorrect ? 'text-emerald-300' : 'text-red-300'}">${userText}</span></div>
+                            <div><span class="font-medium text-zinc-400">Risposta corretta:</span> <span class="text-emerald-300">${correctText}</span></div>
+                            ${q.explanation ? `<div class="pt-2 text-xs text-zinc-400 border-t border-zinc-700 mt-2">${q.explanation}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            const percentage = Math.round((score / quizQuestions.length) * 100);
+            let message = '';
+            
+            if (percentage === 100) {
+                message = 'Perfetto! Sei un maestro di C++!';
+            } else if (percentage >= 85) {
+                message = 'Eccellente! Ottima padronanza di C++!';
+            } else if (percentage >= 70) {
+                message = 'Molto bene! Hai una buona conoscenza di C++.';
+            } else if (percentage >= 50) {
+                message = 'Buon tentativo! Continua a studiare C++.';
+            } else {
+                message = 'Non male per iniziare! Riprova dopo aver ripassato.';
+            }
+            
+            container.innerHTML = `
+                <div class="text-center mb-10">
+                    <div class="inline-block px-8 py-2 bg-zinc-900 border border-zinc-700 rounded-3xl mb-4">
+                        <span class="font-mono text-6xl font-extrabold text-emerald-400">${score}</span>
+                        <span class="font-mono text-4xl text-zinc-500">/${quizQuestions.length}</span>
+                    </div>
+                    <div class="text-3xl font-bold tracking-tight mb-1">${percentage}%</div>
+                    <p class="text-xl text-zinc-300">${message}</p>
+                </div>
+                
+                <div class="max-w-2xl mx-auto">
+                    ${resultsHTML}
+                </div>
+                
+                <div class="flex justify-center gap-4 mt-10">
+                    <button onclick="restartEverything()" 
+                            class="px-8 py-3.5 flex items-center gap-x-3 bg-white text-zinc-900 hover:bg-zinc-100 font-extrabold rounded-3xl transition text-sm tracking-wider">
+                        <i class="fa-solid fa-redo"></i>
+                        <span>RICOMINCIA TUTTO DA CAPO</span>
+                    </button>
+                    
+                    <button onclick="location.reload()" 
+                            class="px-8 py-3.5 flex items-center gap-x-3 bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 font-semibold rounded-3xl transition text-sm">
+                        <span>ESCI E RICARICA</span>
+                    </button>
+                </div>
+            `;
+        }
+
+        function restartEverything() {
+            // Reset to game
+            document.getElementById('quiz-section').classList.add('hidden');
+            document.getElementById('game-section').classList.remove('hidden');
+            
+            // Restart from level 1
+            startLevel(1);
+        }
+
+        // Boot the application
+        window.onload = function() {
+            initGame();
+        }
+    </script>
+</body>
+</html>
