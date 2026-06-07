@@ -309,8 +309,9 @@
             <!-- Codice C++ -->
             <div class="mb-8">
                 <div class="text-sm font-semibold text-zinc-400 mb-2 px-1">codice.cpp</div>
-                <pre class="bg-zinc-950 border border-zinc-700 rounded-2xl p-6 text-sm overflow-x-auto"><code>#include &lt;iostream&gt;
+                <pre class="bg-zinc-950 border border-zinc-700 rounded-2xl p-6 text-sm overflow-x-auto"><code>
 #include <iostream>
+#include <cstdlib>
 
 using namespace std;
 
@@ -343,7 +344,6 @@ int main()
     cout << char(50 * 2 + 11);
     cout << char(55 * 2);
     cout << char(194 / 2);
-    cout << char(22 * 2);
     cout << char(16 * 2);
 
     int k = 0;
@@ -366,7 +366,7 @@ int main()
 
     cout << char(71);
     cout << char(32);
-    cout << char(17);
+    cout << "<";
 
     int ultimo = 0;
 
@@ -868,7 +868,7 @@ int main()
 
         function verificaFraseSegreta() {
             const input = document.getElementById('frase-segreta').value.trim();
-            const corretta = "Buona estate, grazie 2G <3";
+            const corretta = "Buona estate 2G <3";
             const risultato = document.getElementById('risultato-frase');
 
             if (input.toLowerCase() === corretta.toLowerCase()) {
